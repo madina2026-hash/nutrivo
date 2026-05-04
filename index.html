@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- ── Titre et description ── -->
+    <title>NUTRIVO — Votre coach nutrition intelligent</title>
+    <meta name="description" content="Analysez vos repas ivoiriens, suivez votre santé et atteignez vos objectifs nutritionnels avec NUTRIVO." />
+
+    <!-- ── PWA ── -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#16a34a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- ── iOS (Apple) ── -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="NUTRIVO" />
+    <link rel="apple-touch-icon" href="/icons/icon-152.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
+
+    <!-- ── Splash screens iOS ── -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- ── Favicon ── -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72.png" />
+
+    <!-- ── Open Graph (partage WhatsApp, Facebook) ── -->
+    <meta property="og:title" content="NUTRIVO — Coach nutrition ivoirien" />
+    <meta property="og:description" content="Analysez vos repas, suivez votre santé. Spécialisé cuisine ivoirienne et africaine." />
+    <meta property="og:image" content="/icons/icon-512.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_CI" />
+
+    <!-- ── Twitter Card ── -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="NUTRIVO" />
+    <meta name="twitter:description" content="Votre coach nutrition intelligent — Cuisine ivoirienne" />
+
+    <!-- ── Styles de base ── -->
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body {
+        height: 100%;
+        background: #e8f5e9;
+        font-family: 'Nunito', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-font-smoothing: antialiased;
+      }
+      #root { height: 100%; }
+
+      /* Écran de chargement */
+      #splash {
+        position: fixed;
+        inset: 0;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+      #splash.hidden { opacity: 0; pointer-events: none; }
+      #splash-logo {
+        font-size: 48px;
+        font-weight: 900;
+        color: #14532d;
+        letter-spacing: 3px;
+        margin-top: 16px;
+      }
+      #splash-sub {
+        font-size: 14px;
+        color: #6b7280;
+        margin-top: 8px;
+      }
+      #splash-bar-wrap {
+        width: 120px;
+        height: 4px;
+        background: #dcfce7;
+        border-radius: 4px;
+        margin-top: 32px;
+        overflow: hidden;
+      }
+      #splash-bar {
+        height: 100%;
+        background: #16a34a;
+        border-radius: 4px;
+        animation: load 1.5s ease forwards;
+      }
+      @keyframes load {
+        from { width: 0%; }
+        to   { width: 100%; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Écran de chargement -->
+    <div id="splash">
+      <svg width="80" height="70" viewBox="0 0 90 76" fill="none">
+        <text x="2" y="70" font-family="Arial Black,sans-serif"
+          font-size="68" font-weight="900" fill="#14532d">N</text>
+        <path d="M56 2 C50 9 46 19 49 29 C52 39 63 42 69 33 C75 24 70 11 56 2Z" fill="#16a34a"/>
+        <line x1="57" y1="4" x2="61" y2="35" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div id="splash-logo">NUTRIVO</div>
+      <div id="splash-sub">Votre coach nutrition intelligent</div>
+      <div id="splash-bar-wrap">
+        <div id="splash-bar"></div>
+      </div>
+    </div>
+
+    <!-- App React -->
+    <div id="root"></div>
+
+    <!-- Script principal -->
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Enregistrement Service Worker -->
+    <script>
+      // Masquer le splash après chargement
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          const splash = document.getElementById("splash");
+          if (splash) {
+            splash.classList.add("hidden");
+            setTimeout(() => splash.remove(), 500);
+          }
+        }, 1800);
+      });
+
+      // Enregistrer le Service Worker
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then(() => console.log("NUTRIVO: Service Worker actif"))
+          .catch((err) => console.log("SW erreur:", err));
+      }
+
+      // Proposer l'installation PWA
+      let deferredPrompt;
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Afficher un bouton "Installer NUTRIVO" dans l'app
+        window.nutrivoInstallReady = true;
+        window.nutrivoInstall = () => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((result) => {
+              if (result.outcome === "accepted") {
+                console.log("NUTRIVO installé !");
+              }
+              deferredPrompt = null;
+            });
+          }
+        };
+      });
+    </script>
+  </body>
+</html>
