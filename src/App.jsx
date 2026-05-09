@@ -356,92 +356,26 @@ ${ing?"⚠️ Utilise ces ingrédients en priorité.":""}`;
 
       <div style={C.phone}>
 
-        {/* ═══ ACCUEIL ══════════════════════════════════════════ */}
+        {/* ═══ ACCUEIL — Splash screen épuré ═══════════════════════ */}
         {screen==="accueil" && (
-          <div style={C.screen} className="up">
-            {/* Hero style maquette ChatGPT */}
-            <div style={C.hero}>
-              <div style={C.heroLogoWrap}>
+          <div style={{...C.screen, justifyContent:"center", alignItems:"center", background:"#fff"}}>
+            {/* Logo */}
+            <div style={{textAlign:"center", padding:"40px 24px"}}>
+              <div style={{marginBottom:16}}>
                 <svg width="90" height="76" viewBox="0 0 90 76" fill="none">
                   <text x="2" y="70" fontFamily="Arial Black,sans-serif" fontSize="68" fontWeight="900" fill="#14532d">N</text>
                   <path d="M56 2 C50 9 46 19 49 29 C52 39 63 42 69 33 C75 24 70 11 56 2Z" fill="#16a34a"/>
                   <line x1="57" y1="4" x2="61" y2="35" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
               </div>
-              <div style={C.heroNom}>NUTRIVO</div>
-              <div style={C.heroTag}>Votre coach nutrition intelligent</div>
-              <div style={C.heroAssiette}><span style={{fontSize:90}}>🥗</span></div>
+              <div style={{fontFamily:"Arial Black,sans-serif", fontSize:40, color:"#14532d", fontWeight:900, letterSpacing:2, marginBottom:8}}>NUTRIVO</div>
+              <div style={{fontSize:14, color:"#6b7280", fontStyle:"italic", marginBottom:40}}>Votre coach nutrition intelligent</div>
+              <div style={{fontSize:90, marginBottom:48}}>🥗</div>
               <button style={C.btnCommencer} onClick={()=>{
                 if(profilOk){setNavTab("accueil");setScreen("scanner");}
                 else{nav("profil","profil");}
               }}>Commencer</button>
             </div>
-
-            <div style={C.body}>
-              {/* Conseil du jour — de NUTRIVO */}
-              <div style={C.conseilJour}>
-                <span style={{fontSize:20}}>💡</span>
-                <div>
-                  <div style={C.cjTitre}>Conseil du jour</div>
-                  <div style={C.cjTexte}>{CONSEILS_JOUR[conseilIdx]}</div>
-                </div>
-              </div>
-
-              {/* Action principale */}
-              <button style={C.btnPrincipal} onClick={goAnalyse}>
-                <span style={{fontSize:28}}>📸</span>
-                <div>
-                  <div style={C.btnPrincTitre}>Scanner mon repas</div>
-                  <div style={C.btnPrincSub}>Photo ou description</div>
-                </div>
-              </button>
-
-              {/* IMC si profil rempli */}
-              {besoins && (
-                <div style={C.imcBand}>
-                  <div style={C.imcItem}>
-                    <div style={C.imcVal}>{besoins.tdee}</div>
-                    <div style={C.imcLbl}>kcal/jour</div>
-                  </div>
-                  <div style={C.imcDiv}/>
-                  <div style={C.imcItem}>
-                    <div style={{...C.imcVal,color:besoins.ok?"#16a34a":"#d97706"}}>{besoins.imc}</div>
-                    <div style={C.imcLbl}>{besoins.statut}</div>
-                  </div>
-                  <div style={C.imcDiv}/>
-                  <div style={C.imcItem}>
-                    <div style={C.imcVal}>{profil.conditions.includes("aucun")?"Bonne santé ✅":profil.conditions.length>0?profil.conditions.length+" 🩺":"—"}</div>
-                    <div style={C.imcLbl}>Conditions</div>
-                  </div>
-                </div>
-              )}
-              {!profilOk && (
-                <button style={C.btnSetup} onClick={()=>nav("profil","profil")}>
-                  ✏️ Remplir mon profil pour des conseils personnalisés
-                </button>
-              )}
-
-              {/* Derniers repas — de NUTRIVO */}
-              {hist.length>0 && (
-                <>
-                  <div style={C.sectionTitre}>Derniers repas</div>
-                  {hist.slice(0,3).map((h,i)=>(
-                    <div key={i} style={C.histItem} className="up">
-                      {h.image
-                        ? <img src={h.image} alt="" style={C.histImg}/>
-                        : <div style={C.histEmoji}>🍽️</div>}
-                      <div style={{flex:1}}>
-                        <div style={C.histNom}>{h.nom}</div>
-                        <div style={C.histSub}>{h.cal} kcal · {h.date}</div>
-                      </div>
-                      <div style={{...C.histScore,background:sCol(h.score)}}>{h.score}</div>
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
-
-            <BottomNav tab={navTab} nav={nav}/>
           </div>
         )}
 
